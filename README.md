@@ -1,5 +1,3 @@
-# DeathRow
-
 # 💀 DeathRow
 
 **DeathRow** is a multiplayer survival and deception game set inside a brutal, dystopian facility where only the most productive — or cunning — survive. Players must complete daily tasks, avoid sabotage, and stay out of trouble. At the end of each day, someone is eliminated — either due to poor performance or... darker circumstances.
