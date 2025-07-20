@@ -1,4 +1,4 @@
-NAME=DeathRow
+NAME=DeathRow.out
 BUILD_PATH=./build
 SRC_PATH = ./src
 CC=gcc
