@@ -4,7 +4,7 @@ SERVER_BUILD_PATH=./build/server
 SRC_PATH = ./src
 SERVER_SRC_PATH = ./src/server_backend
 CC=gcc
-CFLAGS=-Wall -lSDL2
+CFLAGS=-Wall -lSDL2 -lSDL2_image
 CSERVERFLAGS=-Wall
 
 all:

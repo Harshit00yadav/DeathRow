@@ -10,6 +10,9 @@ typedef struct App {
 	pthread_t listener_thread_id;
 	int mouseX;
 	int mouseY;
+	Node *map;
+	SDL_Texture **textures;
+	int ntextures;
 } App;
 #endif
 int sdl_init(App *app);

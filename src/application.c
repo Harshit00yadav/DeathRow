@@ -1,4 +1,4 @@
-#include "headers/application.h"
+#include "headers/map.h"
 
 int sdl_init(App *app){
 	if (SDL_Init(SDL_INIT_EVERYTHING)){
@@ -30,10 +30,21 @@ int sdl_init(App *app){
 		fprintf(stderr, "Unable to allocate memory.\n");
 		return EXIT_FAILURE;
 	}
+	app->map = load_map("./assets/map01.txt");
+	app->ntextures = 2;
+	char *paths[] = {"./assets/wallfront.png", "./assets/grass01.png"};
+	app->textures = load_textures(app->renderer, app->ntextures, paths);
+	if (!app->textures){
+		fprintf(stderr, "Unable to load images.\n");
+		return EXIT_FAILURE;
+	}
+
 	return EXIT_SUCCESS;
 }
 
 void app_cleanup(App *app, int exit_status){
+	map_destroy_textures(app->textures, app->ntextures);
+	destroyll(app->map);
 	free(app->server_response);
 	destroy_socket(&app->conn);
 	SDL_DestroyRenderer(app->renderer);
@@ -53,5 +64,6 @@ void update(App *app){
 void render(App *app){
 	SDL_SetRenderDrawColor(app->renderer, 15, 15, 15, 255);
 	SDL_RenderClear(app->renderer);
+	map_render(app);
 	SDL_RenderPresent(app->renderer);
 }
