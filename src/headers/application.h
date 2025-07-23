@@ -1,4 +1,5 @@
 #include "client.h"
+#include "player.h"
 
 #ifndef APPLICATION_H
 #define APPLICATION_H
@@ -13,6 +14,7 @@ typedef struct App {
 	Node *map;
 	SDL_Texture **textures;
 	int ntextures;
+	Player *player;
 } App;
 #endif
 int sdl_init(App *app);

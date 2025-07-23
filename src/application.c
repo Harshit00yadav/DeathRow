@@ -38,11 +38,16 @@ int sdl_init(App *app){
 		fprintf(stderr, "Unable to load images.\n");
 		return EXIT_FAILURE;
 	}
-
+	app->player = player_initialize(app->renderer, 20, 40, "./assets/player_spritesheet.png", 64);
+	if (!app->player){
+		fprintf(stderr, "Unable to load images.\n");
+		return EXIT_FAILURE;
+	}
 	return EXIT_SUCCESS;
 }
 
 void app_cleanup(App *app, int exit_status){
+	player_destroy(app->player);
 	map_destroy_textures(app->textures, app->ntextures);
 	destroyll(app->map);
 	free(app->server_response);
@@ -55,9 +60,12 @@ void app_cleanup(App *app, int exit_status){
 }
 
 void update(App *app){
-	send_data(&app->conn, "faltu data 2");
+	char data[50];
+	snprintf(data, sizeof(data), "x: %d, y: %d", app->player->x, app->player->y);
+	send_data(&app->conn, data);
 	recv_data(&app->conn, app->server_response);
-	printf("%s\n", app->server_response);
+	player_update(app->player);
+	// printf("%s\n", app->server_response);
 	SDL_Delay(128);
 }
 
@@ -65,5 +73,6 @@ void render(App *app){
 	SDL_SetRenderDrawColor(app->renderer, 15, 15, 15, 255);
 	SDL_RenderClear(app->renderer);
 	map_render(app);
+	player_render(app->renderer, app->player);
 	SDL_RenderPresent(app->renderer);
 }
