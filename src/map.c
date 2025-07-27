@@ -7,7 +7,6 @@ Node *load_map(const char *path){
 	while ((c = fgetc(m)) != EOF){
 		n = appendto(n, c);
 	}
-	printll(n);
 	fclose(m);
 	return n;
 }

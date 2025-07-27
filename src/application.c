@@ -38,16 +38,28 @@ int sdl_init(App *app){
 		fprintf(stderr, "Unable to load images.\n");
 		return EXIT_FAILURE;
 	}
-	app->player = player_initialize(app->renderer, 20, 40, "./assets/player_spritesheet.png", 64);
-	if (!app->player){
+	char buf[100];
+	send_data(&app->conn, "connect");
+	recv_data(&app->conn, buf);
+	app->ID = atoi(buf);
+	printf("ID assigned: %d\n", app->ID);
+	app->allplayers = NULL;
+	app->allplayers = playerll_insert(app->allplayers, player_initialize(app->renderer, app->ID, 20, 40, "./assets/player_spritesheet.png", 64));
+	if (!app->allplayers->player){
 		fprintf(stderr, "Unable to load images.\n");
 		return EXIT_FAILURE;
 	}
+	app->controller.right = false;
+	app->controller.left = false;
+	app->controller.up = false;
+	app->controller.down = false;
+	app->controller.x = 0;
+	app->controller.y = 0;
 	return EXIT_SUCCESS;
 }
 
 void app_cleanup(App *app, int exit_status){
-	player_destroy(app->player);
+	playerll_destroy(app->allplayers);
 	map_destroy_textures(app->textures, app->ntextures);
 	destroyll(app->map);
 	free(app->server_response);
@@ -61,18 +73,32 @@ void app_cleanup(App *app, int exit_status){
 
 void update(App *app){
 	char data[50];
-	snprintf(data, sizeof(data), "x: %d, y: %d", app->player->x, app->player->y);
+	Player *p = app->allplayers->player;
+	snprintf(
+		data,
+		sizeof(data),
+		"%d:%b:%b:%b:%b:%c",
+		app->ID,
+		app->controller.right,
+		app->controller.left,
+		app->controller.up,
+		app->controller.down,
+		p->state
+	);
 	send_data(&app->conn, data);
 	recv_data(&app->conn, app->server_response);
-	player_update(app->player);
-	// printf("%s\n", app->server_response);
-	SDL_Delay(128);
+	player_parse_response(app->renderer, app->server_response, app->allplayers);
+	SDL_Delay(32);
 }
 
 void render(App *app){
 	SDL_SetRenderDrawColor(app->renderer, 15, 15, 15, 255);
 	SDL_RenderClear(app->renderer);
 	map_render(app);
-	player_render(app->renderer, app->player);
+	Playerll *ptr = app->allplayers;
+	while (ptr != NULL){
+		player_render(app->renderer, ptr->player);
+		ptr = ptr->next;
+	}
 	SDL_RenderPresent(app->renderer);
 }

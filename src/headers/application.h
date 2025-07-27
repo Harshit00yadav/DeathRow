@@ -3,7 +3,9 @@
 
 #ifndef APPLICATION_H
 #define APPLICATION_H
+
 typedef struct App {
+	int ID;
 	SDL_Window *window;
 	SDL_Renderer *renderer;
 	char *server_response;
@@ -14,10 +16,13 @@ typedef struct App {
 	Node *map;
 	SDL_Texture **textures;
 	int ntextures;
-	Player *player;
+	Playerll *allplayers;
+	Controller controller;
 } App;
-#endif
+
 int sdl_init(App *app);
 void app_cleanup(App *app, int exit_status);
 void update(App *app);
 void render(App *app);
+
+#endif
