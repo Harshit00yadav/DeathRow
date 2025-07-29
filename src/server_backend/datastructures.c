@@ -21,7 +21,7 @@ void player_ll_print(LLNode *head){
 	LLNode *ptr = head;
 	while (ptr != NULL){
 		Player *p = ptr->data;
-		printf("%d:%d:%d:%c -> ", p->id, p->x, p->y, p->state);
+		printf("%d:%.0f:%.0f:%c -> ", p->id, p->x, p->y, p->state);
 		ptr = ptr->next;
 	}
 	printf("NULL\n");

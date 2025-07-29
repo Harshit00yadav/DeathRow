@@ -1,17 +1,49 @@
 #include "udp_server.h"
 #include "datastructures.h"
+#include "map_loader.h"
+#include <signal.h>
+
+
+mapObject *map;
+int sockfd;
+
+
+void keyboardInterrupt(int sig){
+	printf("Closing Server ...\n");
+	close(sockfd);
+	destroy_map(map);
+	printf("--[ FINISHED ]--\n");
+	exit(0);
+}
 
 void player_update(Player *p, Controller *c){
+	float interpolation = 0.2;
+	float speedx, speedy;
 	if (c->right && !c->left){
-		p->x += c->speed;
+		speedx = c->speed;
 	} else if (c->left && !c->right){
-		p->x -= c->speed;
+		speedx = -c->speed;
+	} else {
+		speedx = 0;
 	}
 	if (c->down && !c->up){
-		p->y += c->speed;
+		speedy = c->speed;
 	} else if (c->up && !c->down){
-		p->y -= c->speed;
+		speedy = -c->speed;
+	} else {
+		speedy = 0;
 	}
+	p->speed_x += (speedx - p->speed_x) * interpolation;
+	p->speed_y += (speedy - p->speed_y) * interpolation;
+	int indx = (int)(p->x/map->tilesize) + (int)(p->y/map->tilesize) * map->width;
+	// debugging: printf("id: %d -> (%d, %c)\n", p->id, indx, map->array[indx]);
+	if (map->array[indx] == '#'){
+		printf("------collision------\n");
+	} else {
+		printf("-----no collision----\n");
+	}
+	p->x += p->speed_x;
+	p->y += p->speed_y;
 	p->state = c->state;
 }
 
@@ -23,7 +55,7 @@ void generate_send_buffer(char *buff, LLNode *head, Controller *c){
 		if (ptr->data->id == c->id){
 			player_update(ptr->data, c);
 		}
-		snprintf(b, sizeof(b), "%d:%d:%d:%c ", ptr->data->id, ptr->data->x, ptr->data->y, ptr->data->state);
+		snprintf(b, sizeof(b), "%d:%.0f:%0.f:%c ", ptr->data->id, ptr->data->x, ptr->data->y, ptr->data->state);
 		strcat(buff, b);
 		ptr = ptr->next;
 	}
@@ -31,7 +63,8 @@ void generate_send_buffer(char *buff, LLNode *head, Controller *c){
 }
 
 int main(){
-	int sockfd;
+	map = load_map("./assets/map01.txt");
+	signal(SIGINT, keyboardInterrupt);
 	char buffer[BUFFER_SIZE];
 	struct sockaddr_in server_addr, client_addr;
 	socklen_t addr_len = sizeof(client_addr);
@@ -70,6 +103,8 @@ int main(){
 			np->id = ID;
 			np->x = 0;
 			np->y = 0;
+			np->speed_x = 0;
+			np->speed_y = 0;
 			np->state = '.';
 			players = player_ll_insertfront(players, np);
 			player_ll_print(players);
@@ -81,6 +116,5 @@ int main(){
 		}
 		sendto(sockfd, reply, strlen(reply), 0, (const struct sockaddr *)&client_addr, addr_len);
 	}
-	close(sockfd);
 	return 0;
 }

@@ -15,9 +15,11 @@
 
 typedef struct player {
 	int id;
-	int x;
-	int y;
+	float x;
+	float y;
 	char state;
+	float speed_x;
+	float speed_y;
 } Player;
 
 void player_update(Player *p, Controller *c);

@@ -18,8 +18,9 @@ typedef struct Node{
 	struct Node *next;
 } Node;
 
-#endif
-
 Node *appendto(Node *head, char data);
 void printll(Node *head);
 void destroyll(Node *head);
+
+#endif
+

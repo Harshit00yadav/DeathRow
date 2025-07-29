@@ -39,7 +39,7 @@ void map_destroy_textures(SDL_Texture **textures, int size){
 
 void map_render(App *app){
 	Node *ptr = app->map;
-	int tile_size = 10;
+	int tile_size = 32;
 	int x=0, y=0;
 	SDL_Rect sprite_rect = {0, 0, tile_size, tile_size};
 	while (ptr != NULL){
