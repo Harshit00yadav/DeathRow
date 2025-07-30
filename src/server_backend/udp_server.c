@@ -19,6 +19,10 @@ void keyboardInterrupt(int sig){
 void player_update(Player *p, Controller *c){
 	float interpolation = 0.2;
 	float speedx, speedy;
+	int indx = (int)(p->x/map->tilesize) + (int)(p->y/map->tilesize) * map->width;
+	int x_ = indx % map->width;
+	int y_ = (indx - x_) / map->width;
+
 	if (c->right && !c->left){
 		speedx = c->speed;
 	} else if (c->left && !c->right){
@@ -33,15 +37,37 @@ void player_update(Player *p, Controller *c){
 	} else {
 		speedy = 0;
 	}
+
 	p->speed_x += (speedx - p->speed_x) * interpolation;
 	p->speed_y += (speedy - p->speed_y) * interpolation;
-	int indx = (int)(p->x/map->tilesize) + (int)(p->y/map->tilesize) * map->width;
-	// debugging: printf("id: %d -> (%d, %c)\n", p->id, indx, map->array[indx]);
-	if (map->array[indx] == '#'){
-		printf("------collision------\n");
-	} else {
-		printf("-----no collision----\n");
+
+	if (map->array[indx + 1] == '#' && p->speed_x > 0){
+		if (p->x + p->speed_x > ((x_ + 1) * map->tilesize) - 0.01){
+			p->x = ((x_ + 1) * map->tilesize) - 0.01;
+			p->speed_x = 0;
+		}
+	} else if (map->array[indx - 1] == '#' && p->speed_x < 0){
+		if (p->x + p->speed_x < (x_ * map->tilesize) + 0.01){
+			p->x = (x_ * map->tilesize) + 0.01;
+			p->speed_x = 0;
+		}
 	}
+	// debugging: printf("id: %d -> (%d, %c)\n", p->id, indx, map->array[indx]);
+	// 	if (p->speed_x < 0){
+	// 		p->x = (x_ + 1) * map->tilesize + 0.01;
+	// 		p->speed_x = 0;
+	// 	} else if (p->speed_x > 0){
+	// 		p->x = x_ * map->tilesize - 0.01;
+	// 		p->speed_x = 0;
+	// 	}
+	// 	if (p->speed_y < 0){
+	// 		p->y = (y_ + 1) * map->tilesize + 0.01;
+	// 		p->speed_y = 0;
+	// 	} else if (p->speed_y > 0){
+	// 		p->y = y_ * map->tilesize - 0.01;
+	// 		p->speed_y = 0;
+	// 	}
+	// }
 	p->x += p->speed_x;
 	p->y += p->speed_y;
 	p->state = c->state;
@@ -101,8 +127,8 @@ int main(){
 		if (strcmp(buffer, "connect") == 0){
 			Player *np = malloc(sizeof(Player));
 			np->id = ID;
-			np->x = 0;
-			np->y = 0;
+			np->x = 50;
+			np->y = 50;
 			np->speed_x = 0;
 			np->speed_y = 0;
 			np->state = '.';
