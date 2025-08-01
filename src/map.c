@@ -45,8 +45,8 @@ void map_render(App *app){
 	SDL_Rect sprite_rect = {0, 0, tile_size, tile_size};
 	SDL_Rect src_rect = {0, 0, 16, 16};
 	while (ptr != NULL){
-		sprite_rect.x = x*tile_size;
-		sprite_rect.y = y*tile_size;
+		sprite_rect.x = x*tile_size - app->cam.x + app->cam.offsetx;
+		sprite_rect.y = y*tile_size - app->cam.y + app->cam.offsety;
 		src_rect.x = src_rect.w * 0;
 		src_rect.y = src_rect.h * 10;
 		SDL_RenderCopy(app->renderer, app->textures[0], &src_rect, &sprite_rect);
@@ -57,6 +57,16 @@ void map_render(App *app){
 				SDL_RenderCopy(app->renderer, app->textures[0], &src_rect, &sprite_rect);
 				x = -1;
 				y++;
+				break;
+			case '^':
+				src_rect.x = src_rect.w * 14;
+				src_rect.y = src_rect.h * 5;
+				SDL_RenderCopy(app->renderer, app->textures[0], &src_rect, &sprite_rect);
+				break;
+			case '*':
+				src_rect.x = src_rect.w * 16;
+				src_rect.y = src_rect.h * 5;
+				SDL_RenderCopy(app->renderer, app->textures[0], &src_rect, &sprite_rect);
 				break;
 			case '+':
 				src_rect.x = src_rect.w * 10;
@@ -106,6 +116,11 @@ void map_render(App *app){
 				src_rect.y = src_rect.h * 4;
 				SDL_RenderCopy(app->renderer, app->textures[0], &src_rect, &sprite_rect);
 				break;
+			case '6':
+				src_rect.x = src_rect.w * 11;
+				src_rect.y = src_rect.h * 4;
+				SDL_RenderCopy(app->renderer, app->textures[0], &src_rect, &sprite_rect);
+				break;
 			case 'l':
 				src_rect.x = src_rect.w * 6;
 				src_rect.y = src_rect.h * 8;
@@ -119,6 +134,14 @@ void map_render(App *app){
 				src_rect.y = src_rect.h * 8;
 				SDL_RenderCopy(app->renderer, app->textures[0], &src_rect, &sprite_rect);
 				src_rect.x = src_rect.w * 10;
+				src_rect.y = src_rect.h * 3;
+				SDL_RenderCopy(app->renderer, app->textures[0], &src_rect, &sprite_rect);
+				break;
+			case 'M':
+				src_rect.x = src_rect.w * 7;
+				src_rect.y = src_rect.h * 8;
+				SDL_RenderCopy(app->renderer, app->textures[0], &src_rect, &sprite_rect);
+				src_rect.x = src_rect.w * 11;
 				src_rect.y = src_rect.h * 3;
 				SDL_RenderCopy(app->renderer, app->textures[0], &src_rect, &sprite_rect);
 				break;

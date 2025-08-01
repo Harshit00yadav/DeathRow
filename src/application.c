@@ -55,6 +55,11 @@ int sdl_init(App *app){
 	app->controller.down = false;
 	app->controller.x = 0;
 	app->controller.y = 0;
+	app->cam.x = 0;
+	app->cam.y = 0;
+	app->cam.offsetx = (float)SCREEN_WIDTH / 2;
+	app->cam.offsety = (float)SCREEN_HIGHT / 2;
+	app->cam.zoom = 1;
 	return EXIT_SUCCESS;
 }
 
@@ -88,6 +93,7 @@ void update(App *app, double delta){
 	send_data(&app->conn, data);
 	recv_data(&app->conn, app->server_response);
 	player_parse_response(app->renderer, app->server_response, app->allplayers, delta);
+	camera_follow_target(&app->cam, p->x, p->y);
 	SDL_Delay(32);
 }
 
@@ -97,7 +103,7 @@ void render(App *app){
 	map_render(app);
 	Playerll *ptr = app->allplayers;
 	while (ptr != NULL){
-		player_render(app->renderer, ptr->player);
+		player_render(app->renderer, ptr->player, app->cam);
 		ptr = ptr->next;
 	}
 	SDL_RenderPresent(app->renderer);

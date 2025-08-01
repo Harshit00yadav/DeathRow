@@ -59,7 +59,7 @@ void player_update(Player *player, double delta){
 	}
 }
 
-void player_render(SDL_Renderer *renderer, Player *player){
+void player_render(SDL_Renderer *renderer, Player *player, Camera cam){
 	SDL_Rect src_rect = {
 		(int)(player->frame_index) * player->tile_size,
 		player->animation_index * player->tile_size,
@@ -67,8 +67,8 @@ void player_render(SDL_Renderer *renderer, Player *player){
 		player->tile_size
 	};
 	SDL_Rect dest_rect = {
-		player->x - player->tile_size/2,
-		player->y - player->tile_size/2,
+		player->x - player->tile_size/2 - (int)cam.x + (int)cam.offsetx,
+		player->y - player->tile_size/2 - (int)cam.y + (int)cam.offsety,
 		player->tile_size,
 		player->tile_size
 	};

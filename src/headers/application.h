@@ -1,5 +1,6 @@
 #include "client.h"
 #include "player.h"
+#include "camera.h"
 
 #ifndef APPLICATION_H
 #define APPLICATION_H
@@ -18,6 +19,7 @@ typedef struct App {
 	int ntextures;
 	Playerll *allplayers;
 	Controller controller;
+	Camera cam;
 } App;
 
 int sdl_init(App *app);
