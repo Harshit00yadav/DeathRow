@@ -32,10 +32,10 @@ int sdl_init(App *app){
 	}
 	app->map = load_map("./assets/map01.txt");
 	app->ntextures = 2;
-	char *paths[] = {"./assets/wallfront.png", "./assets/grass01.png"};
+	char *paths[] = {"./assets/neo_zero_tileset_02.png", "./assets/grass01.png"};
 	app->textures = load_textures(app->renderer, app->ntextures, paths);
 	if (!app->textures){
-		fprintf(stderr, "Unable to load images.\n");
+		fprintf(stderr, "\n[ ERROR ] Unable to load images.\n");
 		return EXIT_FAILURE;
 	}
 	char buf[100];
@@ -71,7 +71,7 @@ void app_cleanup(App *app, int exit_status){
 	exit(exit_status);
 }
 
-void update(App *app){
+void update(App *app, double delta){
 	char data[50];
 	Player *p = app->allplayers->player;
 	snprintf(
@@ -87,7 +87,7 @@ void update(App *app){
 	);
 	send_data(&app->conn, data);
 	recv_data(&app->conn, app->server_response);
-	player_parse_response(app->renderer, app->server_response, app->allplayers);
+	player_parse_response(app->renderer, app->server_response, app->allplayers, delta);
 	SDL_Delay(32);
 }
 

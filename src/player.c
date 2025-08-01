@@ -32,6 +32,9 @@ Player *player_initialize(SDL_Renderer *renderer, int id, int x, int y, const ch
 	p->y = y;
 	p->tile_size = tile_size;
 	p->state = 'i';
+	p->frame_index = 0;
+	p->animation_index = 0;
+	p->cumilative_delta = 0.0;
 	SDL_Surface *surface = IMG_Load(spritesheetpath);
 	p->spritesheet = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_FreeSurface(surface);
@@ -47,13 +50,34 @@ void player_destroy(Player *player){
 	free(player);
 }
 
-void player_render(SDL_Renderer *renderer, Player *player){
-	SDL_Rect src_rect = {0, 0, player->tile_size, player->tile_size};
-	SDL_Rect dest_rect = {player->x, player->y, player->tile_size, player->tile_size};
-	SDL_RenderCopy(renderer, player->spritesheet, &src_rect, &dest_rect);
+void player_update(Player *player, double delta){
+	player->cumilative_delta += delta;
+	if (player->cumilative_delta > 100){
+		player->frame_index ++;
+		player->frame_index %= 5;
+		player->cumilative_delta = 0.0;
+	}
 }
 
-void player_parse_response(SDL_Renderer *renderer, char *buffer, Playerll *pll){
+void player_render(SDL_Renderer *renderer, Player *player){
+	SDL_Rect src_rect = {
+		(int)(player->frame_index) * player->tile_size,
+		player->animation_index * player->tile_size,
+		player->tile_size,
+		player->tile_size
+	};
+	SDL_Rect dest_rect = {
+		player->x - player->tile_size/2,
+		player->y - player->tile_size/2,
+		player->tile_size,
+		player->tile_size
+	};
+	// SDL_RenderCopy(renderer, player->spritesheet, &src_rect, &dest_rect);
+	SDL_RenderCopyEx(renderer, player->spritesheet, &src_rect, &dest_rect, 0, NULL, SDL_FLIP_HORIZONTAL);
+
+}
+
+void player_parse_response(SDL_Renderer *renderer, char *buffer, Playerll *pll, double delta){
 	bool newplayer;
 	Playerll *ptr;
 	int i, id, x, y;
@@ -89,6 +113,7 @@ void player_parse_response(SDL_Renderer *renderer, char *buffer, Playerll *pll){
 				p->y = y;
 				p->state = state;
 				newplayer = false;
+				player_update(ptr->player, delta);
 				break;
 			}
 			ptr = ptr->next;

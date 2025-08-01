@@ -22,7 +22,7 @@ typedef struct App {
 
 int sdl_init(App *app);
 void app_cleanup(App *app, int exit_status);
-void update(App *app);
+void update(App *app, double delta);
 void render(App *app);
 
 #endif

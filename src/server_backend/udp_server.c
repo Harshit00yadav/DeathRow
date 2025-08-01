@@ -41,33 +41,29 @@ void player_update(Player *p, Controller *c){
 	p->speed_x += (speedx - p->speed_x) * interpolation;
 	p->speed_y += (speedy - p->speed_y) * interpolation;
 
-	if (map->array[indx + 1] == '#' && p->speed_x > 0){
+	if (map->array[indx + 1] == 'H' && p->speed_x > 0){
 		if (p->x + p->speed_x > ((x_ + 1) * map->tilesize) - 0.01){
 			p->x = ((x_ + 1) * map->tilesize) - 0.01;
 			p->speed_x = 0;
 		}
-	} else if (map->array[indx - 1] == '#' && p->speed_x < 0){
+	} else if (map->array[indx - 1] == 'H' && p->speed_x < 0){
 		if (p->x + p->speed_x < (x_ * map->tilesize) + 0.01){
 			p->x = (x_ * map->tilesize) + 0.01;
 			p->speed_x = 0;
 		}
 	}
+	if (map->array[indx + map->width] == 'H' && p->speed_y > 0){
+		if (p->y + p->speed_y > ((y_ + 1) * map->tilesize) - 0.01){
+			p->y = ((y_ + 1) * map->tilesize) - 0.01;
+			p->speed_y = 0;
+		}
+	} else if (map->array[indx - map->width] == 'H' && p->speed_y < 0){
+		if (p->y + p->speed_y < (y_ * map->tilesize) + 0.01){
+			p->y = (y_ * map->tilesize) + 0.01;
+			p->speed_y = 0;
+		}
+	}
 	// debugging: printf("id: %d -> (%d, %c)\n", p->id, indx, map->array[indx]);
-	// 	if (p->speed_x < 0){
-	// 		p->x = (x_ + 1) * map->tilesize + 0.01;
-	// 		p->speed_x = 0;
-	// 	} else if (p->speed_x > 0){
-	// 		p->x = x_ * map->tilesize - 0.01;
-	// 		p->speed_x = 0;
-	// 	}
-	// 	if (p->speed_y < 0){
-	// 		p->y = (y_ + 1) * map->tilesize + 0.01;
-	// 		p->speed_y = 0;
-	// 	} else if (p->speed_y > 0){
-	// 		p->y = y_ * map->tilesize - 0.01;
-	// 		p->speed_y = 0;
-	// 	}
-	// }
 	p->x += p->speed_x;
 	p->y += p->speed_y;
 	p->state = c->state;
@@ -127,8 +123,8 @@ int main(){
 		if (strcmp(buffer, "connect") == 0){
 			Player *np = malloc(sizeof(Player));
 			np->id = ID;
-			np->x = 50;
-			np->y = 50;
+			np->x = 150;
+			np->y = 150;
 			np->speed_x = 0;
 			np->speed_y = 0;
 			np->state = '.';

@@ -22,7 +22,7 @@ int main()
 		fps = 1000.0/delta;
 		SDL_GetMouseState(&app.mouseX, &app.mouseY);
 		event_handler(&app);
-		update(&app);
+		update(&app, delta);
 		render(&app);
 		printf("FPS: %.2f\r", fps);
 	}
