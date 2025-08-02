@@ -24,6 +24,7 @@ typedef struct Player {
 	int animation_index;
 	double cumilative_delta;
 	SDL_Texture *spritesheet;
+	bool isrendered;
 } Player;
 
 typedef struct playerll {

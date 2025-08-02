@@ -16,12 +16,37 @@ void keyboardInterrupt(int sig){
 	exit(0);
 }
 
-void player_update(Player *p, Controller *c){
-	float interpolation = 0.2;
-	float speedx, speedy;
+void player_check_collision(Player *p, char ch){
 	int indx = (int)(p->x/map->tilesize) + (int)(p->y/map->tilesize) * map->width;
 	int x_ = indx % map->width;
 	int y_ = (indx - x_) / map->width;
+	if (map->array[indx + 1] == ch && p->speed_x > 0){
+		if (p->x + p->speed_x > ((x_ + 1) * map->tilesize) - 0.01){
+			p->x = ((x_ + 1) * map->tilesize) - 0.01;
+			p->speed_x = 0;
+		}
+	} else if (map->array[indx - 1] == ch && p->speed_x < 0){
+		if (p->x + p->speed_x < (x_ * map->tilesize) + 0.01){
+			p->x = (x_ * map->tilesize) + 0.01;
+			p->speed_x = 0;
+		}
+	}
+	if (map->array[indx + map->width] == ch && p->speed_y > 0){
+		if (p->y + p->speed_y > ((y_ + 1) * map->tilesize) - 0.01){
+			p->y = ((y_ + 1) * map->tilesize) - 0.01;
+			p->speed_y = 0;
+		}
+	} else if (map->array[indx - map->width] == ch && p->speed_y < 0){
+		if (p->y + p->speed_y < (y_ * map->tilesize) + 0.01){
+			p->y = (y_ * map->tilesize) + 0.01;
+			p->speed_y = 0;
+		}
+	}
+}
+
+void player_update(Player *p, Controller *c){
+	float interpolation = 0.2;
+	float speedx, speedy;
 
 	if (c->right && !c->left){
 		speedx = c->speed;
@@ -41,29 +66,8 @@ void player_update(Player *p, Controller *c){
 	p->speed_x += (speedx - p->speed_x) * interpolation;
 	p->speed_y += (speedy - p->speed_y) * interpolation;
 
-	if (map->array[indx + 1] == 'H' && p->speed_x > 0){
-		if (p->x + p->speed_x > ((x_ + 1) * map->tilesize) - 0.01){
-			p->x = ((x_ + 1) * map->tilesize) - 0.01;
-			p->speed_x = 0;
-		}
-	} else if (map->array[indx - 1] == 'H' && p->speed_x < 0){
-		if (p->x + p->speed_x < (x_ * map->tilesize) + 0.01){
-			p->x = (x_ * map->tilesize) + 0.01;
-			p->speed_x = 0;
-		}
-	}
-	if (map->array[indx + map->width] == 'H' && p->speed_y > 0){
-		if (p->y + p->speed_y > ((y_ + 1) * map->tilesize) - 0.01){
-			p->y = ((y_ + 1) * map->tilesize) - 0.01;
-			p->speed_y = 0;
-		}
-	} else if (map->array[indx - map->width] == 'H' && p->speed_y < 0){
-		if (p->y + p->speed_y < (y_ * map->tilesize) + 0.01){
-			p->y = (y_ * map->tilesize) + 0.01;
-			p->speed_y = 0;
-		}
-	}
-	// debugging: printf("id: %d -> (%d, %c)\n", p->id, indx, map->array[indx]);
+	player_check_collision(p, '#');
+
 	p->x += p->speed_x;
 	p->y += p->speed_y;
 	p->state = c->state;

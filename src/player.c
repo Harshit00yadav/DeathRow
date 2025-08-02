@@ -57,6 +57,7 @@ void player_update(Player *player, double delta){
 		player->frame_index %= 5;
 		player->cumilative_delta = 0.0;
 	}
+	player->isrendered = false;
 }
 
 void player_render(SDL_Renderer *renderer, Player *player, Camera cam){
@@ -74,7 +75,7 @@ void player_render(SDL_Renderer *renderer, Player *player, Camera cam){
 	};
 	// SDL_RenderCopy(renderer, player->spritesheet, &src_rect, &dest_rect);
 	SDL_RenderCopyEx(renderer, player->spritesheet, &src_rect, &dest_rect, 0, NULL, SDL_FLIP_HORIZONTAL);
-
+	player->isrendered = true;
 }
 
 void player_parse_response(SDL_Renderer *renderer, char *buffer, Playerll *pll, double delta){

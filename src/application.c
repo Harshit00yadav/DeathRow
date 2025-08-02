@@ -32,7 +32,7 @@ int sdl_init(App *app){
 	}
 	app->map = load_map("./assets/map01.txt");
 	app->ntextures = 2;
-	char *paths[] = {"./assets/neo_zero_tileset_02.png", "./assets/grass01.png"};
+	char *paths[] = {"./assets/neo_zero_tileset_02.png", "./assets/neo_zero_props_02_free.png"};
 	app->textures = load_textures(app->renderer, app->ntextures, paths);
 	if (!app->textures){
 		fprintf(stderr, "\n[ ERROR ] Unable to load images.\n");
@@ -101,10 +101,5 @@ void render(App *app){
 	SDL_SetRenderDrawColor(app->renderer, 15, 15, 15, 255);
 	SDL_RenderClear(app->renderer);
 	map_render(app);
-	Playerll *ptr = app->allplayers;
-	while (ptr != NULL){
-		player_render(app->renderer, ptr->player, app->cam);
-		ptr = ptr->next;
-	}
 	SDL_RenderPresent(app->renderer);
 }
