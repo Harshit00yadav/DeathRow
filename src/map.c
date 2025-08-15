@@ -52,14 +52,6 @@ void map_render(App *app){
 		sprite_rect.y = y*tile_size - app->cam.y + app->cam.offsety;
 		dest_texture2.x = x*tile_size - app->cam.x + app->cam.offsetx;
 		dest_texture2.y = y*tile_size - app->cam.y + app->cam.offsety;
-		pptr = app->allplayers;
-		while (pptr != NULL){
-			if (pptr->player->isrendered == false && (pptr->player->y) < y * tile_size){
-				player_render(app->renderer, pptr->player, app->cam);
-			}
-			// printf("%d %d\n", pptr->player->y, sprite_rect.y);
-			pptr = pptr->next;
-		}
 		switch (ptr->data){
 			case '\n':
 				x = -1;
@@ -107,5 +99,13 @@ void map_render(App *app){
 		}
 		x++;
 		ptr = ptr->next;
+	}
+	pptr = app->allplayers;
+	while (pptr != NULL){
+		if (pptr->player->isrendered == false && (pptr->player->y) < y * tile_size){
+			player_render(app->renderer, pptr->player, app->cam);
+		}
+		// printf("%d %d\n", pptr->player->y, sprite_rect.y);
+		pptr = pptr->next;
 	}
 }

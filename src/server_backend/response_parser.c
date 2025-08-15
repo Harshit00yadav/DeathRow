@@ -3,7 +3,6 @@
 
 void parse_response(char *buffer, Controller *c){
 	c->id = 0;
-	c->state = '.';
 	int i=0;
 	for (;buffer[i] != ':'; i++){
 		c->id *= 10;
@@ -17,6 +16,8 @@ void parse_response(char *buffer, Controller *c){
 	c->up = buffer[i++] - '0';
 	i++;
 	c->down = buffer[i++] - '0';
+	i++;
+	c->orientation = buffer[i++] - '0';
 	i++;
 	c->state = buffer[i];
 	c->speed = 10;

@@ -17,6 +17,7 @@ typedef struct player {
 	int id;
 	float x;
 	float y;
+	bool orientaion;
 	char state;
 	float speed_x;
 	float speed_y;

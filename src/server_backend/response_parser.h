@@ -9,6 +9,7 @@ typedef struct Controller {
 	bool left;
 	bool up;
 	bool down;
+	bool orientation;
 	char state;
 	int speed;
 } Controller;

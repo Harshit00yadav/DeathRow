@@ -31,8 +31,8 @@ int sdl_init(App *app){
 		return EXIT_FAILURE;
 	}
 	app->map = load_map("./assets/map01.txt");
-	app->ntextures = 2;
-	char *paths[] = {"./assets/neo_zero_tileset_02.png", "./assets/neo_zero_props_02_free.png"};
+	app->ntextures = 3;
+	char *paths[] = {"./assets/neo_zero_tileset_02.png", "./assets/neo_zero_props_02_free.png", "./assets/buddie.png"};
 	app->textures = load_textures(app->renderer, app->ntextures, paths);
 	if (!app->textures){
 		fprintf(stderr, "\n[ ERROR ] Unable to load images.\n");
@@ -44,7 +44,7 @@ int sdl_init(App *app){
 	app->ID = atoi(buf);
 	printf("ID assigned: %d\n", app->ID);
 	app->allplayers = NULL;
-	app->allplayers = playerll_insert(app->allplayers, player_initialize(app->renderer, app->ID, 20, 40, "./assets/player_spritesheet.png", 64));
+	app->allplayers = playerll_insert(app->allplayers, player_initialize(app->renderer, app->ID, 20, 40, app->textures[2], 32));
 	if (!app->allplayers->player){
 		fprintf(stderr, "Unable to load images.\n");
 		return EXIT_FAILURE;
@@ -53,6 +53,7 @@ int sdl_init(App *app){
 	app->controller.left = false;
 	app->controller.up = false;
 	app->controller.down = false;
+	app->controller.orientation = false;
 	app->controller.x = 0;
 	app->controller.y = 0;
 	app->cam.x = 0;
@@ -82,17 +83,18 @@ void update(App *app, double delta){
 	snprintf(
 		data,
 		sizeof(data),
-		"%d:%b:%b:%b:%b:%c",
+		"%d:%b:%b:%b:%b:%b:%c",
 		app->ID,
 		app->controller.right,
 		app->controller.left,
 		app->controller.up,
 		app->controller.down,
+		p->orientation,
 		p->state
 	);
 	send_data(&app->conn, data);
 	recv_data(&app->conn, app->server_response);
-	player_parse_response(app->renderer, app->server_response, app->allplayers, delta);
+	player_parse_response(app->renderer, app->textures, app->server_response, app->allplayers, delta);
 	camera_follow_target(&app->cam, p->x, p->y);
 	SDL_Delay(32);
 }

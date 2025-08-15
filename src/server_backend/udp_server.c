@@ -49,8 +49,10 @@ void player_update(Player *p, Controller *c){
 	float speedx, speedy;
 
 	if (c->right && !c->left){
+		c->orientation = false;
 		speedx = c->speed;
 	} else if (c->left && !c->right){
+		c->orientation = true;
 		speedx = -c->speed;
 	} else {
 		speedx = 0;
@@ -62,6 +64,12 @@ void player_update(Player *p, Controller *c){
 	} else {
 		speedy = 0;
 	}
+	
+	if (speedx || speedy){
+		c->state = 'r';
+	} else {
+		c->state = 'i';
+	}
 
 	p->speed_x += (speedx - p->speed_x) * interpolation;
 	p->speed_y += (speedy - p->speed_y) * interpolation;
@@ -70,6 +78,7 @@ void player_update(Player *p, Controller *c){
 
 	p->x += p->speed_x;
 	p->y += p->speed_y;
+	p->orientaion = c->orientation;
 	p->state = c->state;
 }
 
@@ -81,7 +90,16 @@ void generate_send_buffer(char *buff, LLNode *head, Controller *c){
 		if (ptr->data->id == c->id){
 			player_update(ptr->data, c);
 		}
-		snprintf(b, sizeof(b), "%d:%.0f:%0.f:%c ", ptr->data->id, ptr->data->x, ptr->data->y, ptr->data->state);
+		snprintf(
+			b,
+			sizeof(b),
+			"%d:%.0f:%0.f:%b:%c ",
+			ptr->data->id,
+			ptr->data->x,
+			ptr->data->y,
+			ptr->data->orientaion,
+			ptr->data->state
+		);
 		strcat(buff, b);
 		ptr = ptr->next;
 	}
@@ -132,6 +150,7 @@ int main(){
 			np->speed_x = 0;
 			np->speed_y = 0;
 			np->state = '.';
+			np->orientaion = false;
 			players = player_ll_insertfront(players, np);
 			player_ll_print(players);
 			snprintf(reply, sizeof(reply), "%d", ID++);
