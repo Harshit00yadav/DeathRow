@@ -9,6 +9,6 @@ typedef struct Camera{
 	float zoom;
 } Camera;
 
-void camera_follow_target(Camera *cam, int x, int y);
+void camera_follow_target(Camera *cam, int x, int y, float follow_strength);
 
 #endif

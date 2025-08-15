@@ -95,8 +95,7 @@ void update(App *app, double delta){
 	send_data(&app->conn, data);
 	recv_data(&app->conn, app->server_response);
 	player_parse_response(app->renderer, app->textures, app->server_response, app->allplayers, delta);
-	camera_follow_target(&app->cam, p->x, p->y);
-	SDL_Delay(32);
+	camera_follow_target(&app->cam, p->x, p->y, 0.005 * delta);
 }
 
 void render(App *app){

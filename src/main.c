@@ -25,6 +25,7 @@ int main()
 		update(&app, delta);
 		render(&app);
 		printf("FPS: %.2f\r", fps);
+	  SDL_Delay(32);
 	}
 	app_cleanup(&app, EXIT_SUCCESS);
 	return 0;

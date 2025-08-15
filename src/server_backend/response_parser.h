@@ -11,7 +11,7 @@ typedef struct Controller {
 	bool down;
 	bool orientation;
 	char state;
-	int speed;
+	float speed;
 } Controller;
 
 void parse_response(char *buffer, Controller *c);
