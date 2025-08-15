@@ -45,8 +45,9 @@ void player_check_collision(Player *p, char ch){
 }
 
 void player_update(Player *p, Controller *c){
-	float interpolation = 0.008;
+	float interpolation = 0.08;
 	float speedx, speedy;
+	c->speed = 5;
 
 	if (c->right && !c->left){
 		c->orientation = false;

@@ -24,8 +24,8 @@ int main()
 		event_handler(&app);
 		update(&app, delta);
 		render(&app);
-		printf("FPS: %.2f\r", fps);
-	  SDL_Delay(32);
+		SDL_Delay(TIME_PER_FRAME);
+		printf("FPS: %.2f\n", fps);
 	}
 	app_cleanup(&app, EXIT_SUCCESS);
 	return 0;
