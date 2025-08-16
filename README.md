@@ -47,7 +47,7 @@ Sabotage, murder, and manipulation are all on the table — but guards are watch
 
 | Feature | Status |
 |--------|--------|
-| Multiplayer Lobby System | 🔜 Planned |
+| Multiplayer Lobby System | ✅ Prototype |
 | Procedural Task Generator | ✅ Prototype |
 | Sabotage System | 🔜 In Progress |
 | Murder & Forensics Mechanic | 🔜 In Design |
