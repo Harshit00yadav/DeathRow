@@ -39,7 +39,6 @@ void map_destroy_textures(SDL_Texture **textures, int size){
 }
 
 void map_render(App *app){
-	Node *ptr = app->map;
 	Playerll *pptr;
 	int tile_size = 32;
 	int x=0, y=0;
@@ -47,6 +46,7 @@ void map_render(App *app){
 	SDL_Rect dest_texture2 = {0, 0, tile_size, tile_size};
 	SDL_Rect src_rect = {0, 0, 16, 16};
 	SDL_Rect src_texture2 = {0, 0, 16, 16};
+	Node *ptr = app->map;
 	while (ptr != NULL){
 		sprite_rect.x = x*tile_size - app->cam.x + app->cam.offsetx;
 		sprite_rect.y = y*tile_size - app->cam.y + app->cam.offsety;
@@ -60,11 +60,6 @@ void map_render(App *app){
 			case '.':
 				src_rect.x = src_rect.w * 0;
 				src_rect.y = src_rect.h * 10;
-				SDL_RenderCopy(app->renderer, app->textures[0], &src_rect, &sprite_rect);
-				break;
-			case 'H':
-				src_rect.x = src_rect.w * 1;
-				src_rect.y = src_rect.h * 8;
 				SDL_RenderCopy(app->renderer, app->textures[0], &src_rect, &sprite_rect);
 				break;
 			case 'T':
@@ -93,7 +88,7 @@ void map_render(App *app){
 				break;
 			case '#':
 				src_rect.x = src_rect.w * 1;
-				src_rect.y = src_rect.h * 6;
+				src_rect.y = src_rect.h * 7;
 				SDL_RenderCopy(app->renderer, app->textures[0], &src_rect, &sprite_rect);
 				break;
 		}
@@ -107,5 +102,29 @@ void map_render(App *app){
 		}
 		// printf("%d %d\n", pptr->player->y, sprite_rect.y);
 		pptr = pptr->next;
+	}
+	x=0;
+	y=0;
+	ptr = app->map;
+	while (ptr != NULL){
+		sprite_rect.x = x*tile_size - app->cam.x + app->cam.offsetx;
+		sprite_rect.y = y*tile_size - app->cam.y + app->cam.offsety;
+		dest_texture2.x = x*tile_size - app->cam.x + app->cam.offsetx;
+		dest_texture2.y = y*tile_size - app->cam.y + app->cam.offsety;
+		switch (ptr->data){
+			case '\n':
+				x = -1;
+				y++;
+				break;
+			case '#':
+				src_rect.x = src_rect.w * 1;
+				src_rect.y = src_rect.h * 6;
+				dest_texture2.h = tile_size;
+				dest_texture2.y -= tile_size;
+				SDL_RenderCopy(app->renderer, app->textures[0], &src_rect, &dest_texture2);
+				break;
+		}
+		x++;
+		ptr = ptr->next;
 	}
 }
