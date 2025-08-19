@@ -21,24 +21,24 @@ void player_check_collision(Player *p, char ch){
 	int x_ = indx % map->width;
 	int y_ = (indx - x_) / map->width;
 	if (map->array[indx + 1] == ch && p->speed_x > 0){
-		if (p->x + p->speed_x > ((x_ + 1) * map->tilesize) - 0.01){
-			p->x = ((x_ + 1) * map->tilesize) - 0.01;
+		if (p->x + p->x_padding + p->speed_x > ((x_ + 1) * map->tilesize) - 0.01){
+			p->x = ((x_ + 1) * map->tilesize) - p->x_padding;
 			p->speed_x = 0;
 		}
 	} else if (map->array[indx - 1] == ch && p->speed_x < 0){
-		if (p->x + p->speed_x < (x_ * map->tilesize) + 0.01){
-			p->x = (x_ * map->tilesize) + 0.01;
+		if (p->x - p->x_padding + p->speed_x < (x_ * map->tilesize) + 0.01){
+			p->x = (x_ * map->tilesize) + p->x_padding;
 			p->speed_x = 0;
 		}
 	}
 	if (map->array[indx + map->width] == ch && p->speed_y > 0){
-		if (p->y + p->speed_y > ((y_ + 1) * map->tilesize) - 0.01){
-			p->y = ((y_ + 1) * map->tilesize) - 0.01;
+		if (p->y + p->y_padding + p->speed_y > ((y_ + 1) * map->tilesize) - 0.01){
+			p->y = ((y_ + 1) * map->tilesize) - p->y_padding;
 			p->speed_y = 0;
 		}
 	} else if (map->array[indx - map->width] == ch && p->speed_y < 0){
-		if (p->y + p->speed_y < (y_ * map->tilesize) + 0.01){
-			p->y = (y_ * map->tilesize) + 0.01;
+		if (p->y - p->y_padding + p->speed_y < (y_ * map->tilesize) + 0.01){
+			p->y = (y_ * map->tilesize) + p->y_padding;
 			p->speed_y = 0;
 		}
 	}
@@ -148,6 +148,8 @@ int main(){
 			np->id = ID;
 			np->x = 150;
 			np->y = 150;
+			np->x_padding = 10;
+			np->y_padding = 10;
 			np->speed_x = 0;
 			np->speed_y = 0;
 			np->state = '.';

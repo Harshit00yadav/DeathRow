@@ -21,6 +21,8 @@ typedef struct player {
 	char state;
 	float speed_x;
 	float speed_y;
+	float x_padding;
+	float y_padding;
 } Player;
 
 void player_update(Player *p, Controller *c);
