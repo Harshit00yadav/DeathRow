@@ -1,8 +1,7 @@
 #include "udp_server.h"
+#include "guards_ai.h"
 #include "datastructures.h"
 #include "map_loader.h"
-#include <signal.h>
-
 
 mapObject *map;
 int sockfd;
@@ -135,6 +134,9 @@ int main(){
 
 	LLNode *players = NULL;
 	int ID = 0;
+	players = guards_init(2, players);
+	pthread_t guard_tread_id;
+	pthread_create(&guard_tread_id, NULL, guards_thread_function, (void *)players);
 	while (true){
 		int n = recvfrom(sockfd, buffer, BUFFER_SIZE, 0, (struct sockaddr *)&client_addr, &addr_len);
 		if (n < 0){

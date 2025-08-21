@@ -6,6 +6,7 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include "response_parser.h"
+#include <signal.h>
 
 #define PORT 8008
 #define BUFFER_SIZE 1024
