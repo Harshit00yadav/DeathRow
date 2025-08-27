@@ -99,6 +99,7 @@ void player_parse_response(SDL_Renderer *renderer, SDL_Texture **textures, char 
 	bool newplayer;
 	Playerll *ptr;
 	int i, id, x, y;
+	bool isneg = false;
 	int orientation;
 	char state;
 	i=0;
@@ -106,9 +107,18 @@ void player_parse_response(SDL_Renderer *renderer, SDL_Texture **textures, char 
 		id = 0;
 		x = 0;
 		y = 0;
+		if (buffer[i] == '-'){
+			isneg = true;
+			i++;
+		} else {
+			isneg = false;
+		}
 		for (;buffer[i] != ':'; i++){
 			id *= 10;
 			id += buffer[i] - '0';
+		}
+		if (isneg){
+			id = -id;
 		}
 		i++;
 		for (;buffer[i] != ':'; i++){
@@ -127,6 +137,7 @@ void player_parse_response(SDL_Renderer *renderer, SDL_Texture **textures, char 
 		i++;
 		ptr = pll;
 		newplayer = true;
+		printf("%d:%d:%d ", id, x, y);
 		while(ptr != NULL){
 			Player *p = ptr->player;
 			if (p->id == id){

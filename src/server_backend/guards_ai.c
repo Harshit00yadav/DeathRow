@@ -58,7 +58,7 @@ void *guards_thread_function(void *args){
 				player_update(ptr->data, &c);
 			}
 		}
-		msleep(1000/30);
+		msleep(1000/60);
 	}
 	pthread_exit(NULL);
 }
