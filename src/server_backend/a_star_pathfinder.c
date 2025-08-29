@@ -91,8 +91,8 @@ A_Grid *load_map(const char *path){
 		for (int j=0; j<width; j++){
 			cell = &grid->grid[i][j];
 			cell->neighbours[0] = (i<0)?NULL:&grid->grid[i-1][j];
-			cell->neighbours[2] = (i>=width)?NULL:&grid->grid[i+1][j];
-			cell->neighbours[1] = (j>=hight)?NULL:&grid->grid[i][j+1];
+			cell->neighbours[2] = (i>=hight)?NULL:&grid->grid[i+1][j];
+			cell->neighbours[1] = (j>=width)?NULL:&grid->grid[i][j+1];
 			cell->neighbours[3] = (j<0)?NULL:&grid->grid[i][j-1];
 		}
 	}
@@ -101,7 +101,7 @@ A_Grid *load_map(const char *path){
 
 void printgrid(A_Grid *grid){
 	static struct timespec req, rem;
-	req.tv_nsec = 1e6;
+	req.tv_nsec = 10e6;
 	system("clear");
 	for (int i=0; i<grid->hight; i++){
 		for (int j=0; j<grid->width; j++){
@@ -134,7 +134,7 @@ int main(){
 	bool path_found = false;
 	A_Grid *grid = load_map("../../assets/map01.txt");
 	grid->grid[1][1].ch = '@';
-	A_Cell *end = &grid->grid[17][10];
+	A_Cell *end = &grid->grid[19][49];
 	
 	A_List *openlist = NULL;
 	A_List *closedlist = NULL;
