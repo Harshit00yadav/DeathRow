@@ -31,9 +31,12 @@ typedef struct A_LIST {
 
 A_List *A_List_insert(A_List *head, A_Cell *cellptr);
 A_List *A_List_remove(A_List *head, A_Cell *cellptr);
+void A_List_destroy(A_List *head);
 bool A_List_contains(A_List *head, A_Cell *cellptr);
 A_Cell *least_f(A_List *head);
-A_Grid *load_map(const char *path);
+A_Grid *load_a_map(const char *path);
 double heuristic_cost(int startx, int starty, int endx, int endy);
 void printgrid(A_Grid *grid);
+A_Grid *generate_route(A_Grid *grid, int startrow, int startcol, int endrow, int endcol);
+void destroy_grid(A_Grid *grid);
 #endif

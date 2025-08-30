@@ -134,7 +134,7 @@ int main(){
 
 	LLNode *players = NULL;
 	int ID = 0;
-	players = guards_init(2, players);
+	players = guards_init(1, players);
 	pthread_t guard_tread_id;
 	pthread_create(&guard_tread_id, NULL, guards_thread_function, (void *)players);
 	while (true){

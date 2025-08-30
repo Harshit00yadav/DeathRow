@@ -1,13 +1,28 @@
 #include "a_star_pathfinder.h"
 #include <time.h>
+#include <errno.h>
 
 /*
 
 Compile and test:
 gcc a_star_pathfinder.c -o test_feature -Wall -lm -g;./test_feature;rm ./test_feature 
 
-*/
 
+int msleep(long msec){
+    struct timespec ts;
+    int res;
+    if (msec < 0){
+        errno = EINVAL;
+        return -1;
+    }
+    ts.tv_sec = msec / 1000;
+    ts.tv_nsec = (msec % 1000) * 1000000;
+    do {
+        res = nanosleep(&ts, &ts);
+    } while (res && errno == EINTR);
+    return res;
+}
+*/
 
 bool A_List_contains(A_List *head, A_Cell *cellptr){
 	A_List *ptr = head;
@@ -21,7 +36,6 @@ bool A_List_contains(A_List *head, A_Cell *cellptr){
 }
 
 A_List *A_List_insert(A_List *head, A_Cell *cellptr){
-	cellptr->ch = '*';
 	A_List *node = (A_List *)malloc(sizeof(A_List));
 	node->data = cellptr;
 	node->next = head;
@@ -29,7 +43,6 @@ A_List *A_List_insert(A_List *head, A_Cell *cellptr){
 }
 
 A_List *A_List_remove(A_List *head, A_Cell *cellptr){
-	cellptr->ch = '+';
 	A_List *ptr = head;
 	A_List *nextptr;
 	if (ptr->data == cellptr){
@@ -46,7 +59,17 @@ A_List *A_List_remove(A_List *head, A_Cell *cellptr){
 	return head;
 }
 
-A_Grid *load_map(const char *path){
+void A_List_destroy(A_List *head){
+	A_List *ptr = head;
+	A_List *nextptr;
+	while (ptr){
+		nextptr = ptr->next;
+		free(ptr);
+		ptr = nextptr;
+	}
+}
+
+A_Grid *load_a_map(const char *path){
 	FILE *fd = fopen(path, "r");
 	char c;
 	char buffer[2048];
@@ -99,17 +122,26 @@ A_Grid *load_map(const char *path){
 	return grid;
 }
 
+void destroy_grid(A_Grid *grid){
+	A_Cell *cell;
+	for (int i=0; i<grid->hight; i++){
+		for (int j=0; j<grid->width; j++){
+			cell = &grid->grid[i][j]; 
+			free(cell->neighbours);
+		}
+		free(grid->grid[i]);
+	}
+	free(grid->grid);
+	free(grid);
+}
+
 void printgrid(A_Grid *grid){
-	static struct timespec req, rem;
-	req.tv_nsec = 10e6;
-	system("clear");
 	for (int i=0; i<grid->hight; i++){
 		for (int j=0; j<grid->width; j++){
 			printf("%c", grid->grid[i][j].ch);
 		}
 		printf("\n");
 	}
-	nanosleep(&req, &rem);
 }
 
 A_Cell *least_f(A_List *head){
@@ -130,16 +162,13 @@ double heuristic_cost(int startx, int starty, int endx, int endy){
 	return res;
 }
 
-int main(){
+A_Grid *generate_route(A_Grid *grid, int startrow, int startcol, int endrow, int endcol){
 	bool path_found = false;
-	A_Grid *grid = load_map("../../assets/map01.txt");
-	grid->grid[1][1].ch = '@';
-	A_Cell *end = &grid->grid[19][49];
-	
+	A_Cell *end = &grid->grid[startrow][startcol];
+	A_Cell *ptr = end;
 	A_List *openlist = NULL;
 	A_List *closedlist = NULL;
-	openlist = A_List_insert(openlist, &grid->grid[1][1]);
-	printgrid(grid);
+	openlist = A_List_insert(openlist, &grid->grid[endrow][endcol]);
 
 	while (openlist != NULL){
 		A_Cell *current = least_f(openlist);
@@ -172,15 +201,36 @@ int main(){
 		
 		closedlist = A_List_insert(closedlist, current);
 		openlist = A_List_remove(openlist, current);
-		printgrid(grid);
 	}
+	A_List_destroy(openlist);
+	A_List_destroy(closedlist);
 	if (path_found){
-		A_Cell *ptr = end;
-		while (ptr){
-			ptr->ch = '@';
+		while (ptr->previous){
+			ptr->ch = '*';
 			ptr = ptr->previous;
 		}
-		printgrid(grid);
+		printf("Path Found!\nGrid:%p cell:%p: (%d, %d)\n", grid, end, end->col, end->row);
+	} else {
+		printf("Path NOT Found!\n");
 	}
-	return 0;
+	return grid;
 }
+
+//int main(){
+//	A_Grid *grid = load_a_map("../../assets/map01.txt");
+//	A_Cell *cur = &grid->grid[2][2];
+//	printgrid(grid);
+//	printf("\n%p\n", cur->previous);
+//	msleep(100);
+//	grid = generate_route(grid, 2, 2, 28, 48);
+//	while (cur->previous){
+//		cur->ch = '@';
+//		printgrid(grid);
+//		printf("\n%p\n", cur->previous);
+//		cur->ch = '+';
+//		cur = cur->previous;
+//		msleep(100);
+//	}
+//	destroy_grid(grid);
+//	return 0;
+//}

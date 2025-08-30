@@ -20,4 +20,6 @@ void parse_response(char *buffer, Controller *c){
 	c->orientation = buffer[i++] - '0';
 	i++;
 	c->state = buffer[i];
+	c->pathgrid = NULL;
+	c->genpath = false;
 }

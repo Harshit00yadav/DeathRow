@@ -5,7 +5,7 @@ SRC_PATH = ./src
 SERVER_SRC_PATH = ./src/server_backend
 CC=gcc
 CFLAGS=-Wall -lSDL2 -lSDL2_image
-CSERVERFLAGS=-Wall -lpthread
+CSERVERFLAGS=-Wall -lpthread -lm
 
 all:
 	if [ ! -d "$(BUILD_PATH)" ]; then mkdir $(BUILD_PATH); fi

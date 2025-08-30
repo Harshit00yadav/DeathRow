@@ -1,4 +1,5 @@
 #include "guards_ai.h"
+#include "a_star_pathfinder.h"
 
 int msleep(long msec){
     struct timespec ts;
@@ -34,28 +35,90 @@ LLNode *guards_init(size_t n, LLNode *players){
 
 void *guards_thread_function(void *args){
 	LLNode *players = (LLNode *)args;
-	char buffer[1024];
-	bool left=false, right=true, up=false, down=false;
-	int orientation = 0;
-	char state = 'i';
+
+	// --- controllers ---
+	int count = 0;
+	for (LLNode *ptr=players; ptr!=NULL; ptr=ptr->next){
+		count++;
+	}
+	Controller cntrls[count];
+	int i = 0;
+	for (LLNode *ptr=players; ptr!=NULL; ptr=ptr->next, i++){
+		cntrls[i].left = false;
+		cntrls[i].right = false;
+		cntrls[i].up = false;
+		cntrls[i].down = false;
+		cntrls[i].orientation = false;
+		cntrls[i].id = ptr->data->id;
+		cntrls[i].orientation = 0;
+		cntrls[i].state = '.';
+		cntrls[i].pathgrid = load_a_map("./assets/map01.txt");
+		cntrls[i].genpath = true;
+	}
+	// ------
+	int row, col;
+	A_Cell *cur_cell = NULL, *target_cell = NULL;
+	// target_cell = &cntrls[1].pathgrid->grid[1][1];
+	msleep(3000);
 	while (true){
-		for (LLNode *ptr=players; ptr!=NULL; ptr=ptr->next){
+		i = 0;
+		for (LLNode *ptr=players; ptr!=NULL; ptr=ptr->next, i++){
 			if (ptr->data->id < 0){
-				snprintf(
-					buffer,
-					sizeof(buffer),
-					"%d:%b:%b:%b:%b:%b:%c",
-					ptr->data->id,
-					right,
-					left,
-					up,
-					down,
-					orientation,
-					state
-				);
-				Controller c;
-				parse_response(buffer, &c);
-				player_update(ptr->data, &c);
+				row = (ptr->data->y / 32);
+				col = (ptr->data->x / 32);
+				cur_cell = &cntrls[i].pathgrid->grid[row][col];
+				if (cntrls[i].genpath){
+					cntrls[i].pathgrid = generate_route(
+						cntrls[i].pathgrid,
+						row,
+						col,
+						1,
+						2
+					);
+					printgrid(cntrls[i].pathgrid);
+					target_cell = cur_cell->previous;
+					cntrls[i].genpath = false;
+				};
+				// DONE: makes the guard follow the path
+				if (target_cell){
+					printf(
+						"cur: %d %d, targ: %d %d\n",
+						cur_cell->col,
+						cur_cell->row,
+						target_cell->col,
+						target_cell->row
+					);
+					if (cur_cell == target_cell){
+						target_cell =  cur_cell->previous;
+					} else {
+						if (ptr->data->x - ptr->data->x_padding < target_cell->col * 32){
+							cntrls[i].right = true;
+							cntrls[i].left = false;
+						} else if (ptr->data->x + ptr->data->x_padding > target_cell->col * 32 + 32){
+							cntrls[i].left = true;
+							cntrls[i].right = false;
+						} else {
+							cntrls[i].right = false;
+							cntrls[i].left = false;
+						}
+						if (ptr->data->y - ptr->data->y_padding < target_cell->row * 32){
+							cntrls[i].down = true;
+							cntrls[i].up = false;
+						} else if (ptr->data->y + ptr->data->y_padding > target_cell->row * 32 + 32){
+							cntrls[i].up = true;
+							cntrls[i].down = false;
+						} else {
+							cntrls[i].up = false;
+							cntrls[i].down = false;
+						}
+					}
+				} else {
+					cntrls[i].right = false;
+					cntrls[i].left = false;
+					cntrls[i].up = false;
+					cntrls[i].down = false;
+				}
+				player_update(ptr->data, &cntrls[i]);
 			}
 		}
 		msleep(1000/60);
