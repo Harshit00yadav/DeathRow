@@ -174,7 +174,6 @@ A_Grid *generate_route(A_Grid *grid, int startrow, int startcol, int endrow, int
 		A_Cell *current = least_f(openlist);
 		if (current == end){
 			path_found = true;
-			printf("Done!\n");
 			break;
 		}
 
@@ -209,7 +208,7 @@ A_Grid *generate_route(A_Grid *grid, int startrow, int startcol, int endrow, int
 			ptr->ch = '*';
 			ptr = ptr->previous;
 		}
-		printf("Path Found!\nGrid:%p cell:%p: (%d, %d)\n", grid, end, end->col, end->row);
+		printf("Path Found!\n");
 	} else {
 		printf("Path NOT Found!\n");
 	}

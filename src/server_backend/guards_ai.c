@@ -72,22 +72,14 @@ void *guards_thread_function(void *args){
 						cntrls[i].pathgrid,
 						row,
 						col,
-						1,
-						2
+						18,
+						53
 					);
-					printgrid(cntrls[i].pathgrid);
 					target_cell = cur_cell->previous;
 					cntrls[i].genpath = false;
 				};
 				// DONE: makes the guard follow the path
 				if (target_cell){
-					printf(
-						"cur: %d %d, targ: %d %d\n",
-						cur_cell->col,
-						cur_cell->row,
-						target_cell->col,
-						target_cell->row
-					);
 					if (cur_cell == target_cell){
 						target_cell =  cur_cell->previous;
 					} else {

@@ -31,8 +31,8 @@ int sdl_init(App *app){
 		return EXIT_FAILURE;
 	}
 	app->map = load_map("./assets/map01.txt");
-	app->ntextures = 3;
-	char *paths[] = {"./assets/neo_zero_tileset_02.png", "./assets/neo_zero_props_02_free.png", "./assets/buddie.png"};
+	app->ntextures = 4;
+	char *paths[] = {"./assets/neo_zero_tileset_02.png", "./assets/neo_zero_props_02_free.png", "./assets/buddie.png", "./assets/guard.png"};
 	app->textures = load_textures(app->renderer, app->ntextures, paths);
 	if (!app->textures){
 		fprintf(stderr, "\n[ ERROR ] Unable to load images.\n");

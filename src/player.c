@@ -137,7 +137,6 @@ void player_parse_response(SDL_Renderer *renderer, SDL_Texture **textures, char 
 		i++;
 		ptr = pll;
 		newplayer = true;
-		printf("%d:%d:%d ", id, x, y);
 		while(ptr != NULL){
 			Player *p = ptr->player;
 			if (p->id == id){
@@ -157,7 +156,11 @@ void player_parse_response(SDL_Renderer *renderer, SDL_Texture **textures, char 
 			ptr = ptr->next;
 		}
 		if (newplayer){
-			pll = playerll_insert(pll, player_initialize(renderer, id, x, y, textures[2], 32));
+			if (isneg){
+				pll = playerll_insert(pll, player_initialize(renderer, id, x, y, textures[3], 32));
+			} else {
+				pll = playerll_insert(pll, player_initialize(renderer, id, x, y, textures[2], 32));
+			}
 		}	
 	} while(buffer[++i] != '#');
 }
