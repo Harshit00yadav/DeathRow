@@ -1,7 +1,7 @@
-#include "udp_server.h"
-#include "guards_ai.h"
-#include "datastructures.h"
-#include "map_loader.h"
+#include "headers/udp_server.h"
+#include "headers/guards_ai.h"
+#include "headers/datastructures.h"
+#include "headers/map_loader.h"
 
 mapObject *map;
 int sockfd;
@@ -107,7 +107,7 @@ void generate_send_buffer(char *buff, LLNode *head, Controller *c){
 }
 
 int main(){
-	map = load_map("./assets/map01.txt");
+	map = load_map("../assets/map01.txt");
 	signal(SIGINT, keyboardInterrupt);
 	char buffer[BUFFER_SIZE];
 	struct sockaddr_in server_addr, client_addr;

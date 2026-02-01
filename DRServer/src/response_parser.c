@@ -1,5 +1,5 @@
-#include "response_parser.h"
-#include "udp_server.h"
+#include "headers/response_parser.h"
+#include "headers/udp_server.h"
 
 void parse_response(char *buffer, Controller *c){
 	c->id = 0;

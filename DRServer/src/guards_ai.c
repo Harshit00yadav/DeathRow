@@ -1,5 +1,5 @@
-#include "guards_ai.h"
-#include "a_star_pathfinder.h"
+#include "headers/guards_ai.h"
+#include "headers/a_star_pathfinder.h"
 
 int msleep(long msec){
     struct timespec ts;
@@ -52,7 +52,7 @@ void *guards_thread_function(void *args){
 		cntrls[i].id = ptr->data->id;
 		cntrls[i].orientation = 0;
 		cntrls[i].state = '.';
-		cntrls[i].pathgrid = load_a_map("./assets/map01.txt");
+		cntrls[i].pathgrid = load_a_map("../assets/map01.txt");
 		cntrls[i].genpath = true;
 	}
 	// ------

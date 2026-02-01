@@ -1,4 +1,4 @@
-#include "a_star_pathfinder.h"
+#include "headers/a_star_pathfinder.h"
 #include <time.h>
 #include <errno.h>
 

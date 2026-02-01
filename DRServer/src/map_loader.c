@@ -1,4 +1,4 @@
-#include "map_loader.h"
+#include "headers/map_loader.h"
 
 mapObject *load_map(const char *path){
 	mapObject *obj = malloc(sizeof(mapObject));
