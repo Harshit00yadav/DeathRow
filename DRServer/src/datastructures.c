@@ -1,28 +1,39 @@
 #include "headers/datastructures.h"
 #include <stdlib.h>
 
-LLNode *player_ll_insertfront(LLNode *head, Player *p){
-	LLNode *n = malloc(sizeof(LLNode));
-	n->data = p;
-	n->next = head;
-	return n;
+void ll_insertfront(LinkedList *list, void *item)
+{
+	NodeLL *new_node = (NodeLL *)malloc(sizeof(NodeLL));
+	new_node->data = item;
+	new_node->next = list->head;
+	list->head = new_node;
+	list->size++;
 }
 
-void player_ll_destroy(LLNode *head){
-	if (head == NULL){
-		return;
+void nodell_teardown(NodeLL *head)
+{
+	while (head){
+		NodeLL *next = head->next;
+		free(head);
+		head = next;
 	}
-	player_ll_destroy(head->next);
-	free(head->data);
-	free(head);
 }
 
-void player_ll_print(LLNode *head){
-	LLNode *ptr = head;
-	while (ptr != NULL){
-		Player *p = ptr->data;
-		printf("%d:%.0f:%.0f:%b:%c -> ", p->id, p->x, p->y, p->orientaion, p->state);
-		ptr = ptr->next;
+void ll_teardown(LinkedList *list)
+{
+	nodell_teardown(list->head);
+	list->head = NULL;
+	list->size = 0;
+	free(list);
+}
+
+void ll_print(LinkedList *list)
+{
+	NodeLL *t_ptr = list->head;
+	printf("size: %zu\n", list->size);
+	while (t_ptr != NULL){
+		printf("󱀝  ");
+		t_ptr = t_ptr->next;
 	}
-	printf("NULL\n");
+	printf("null\n");
 }

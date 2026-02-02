@@ -82,23 +82,25 @@ void player_update(Player *p, Controller *c){
 	p->state = c->state;
 }
 
-void generate_send_buffer(char *buff, LLNode *head, Controller *c){
-	LLNode *ptr = head;
+void generate_send_buffer(char *buff, NodeLL *head, Controller *c){
+	NodeLL *ptr = head;
+	Player *data_ret;
 	char b[100];
 	strcpy(buff, "");
 	while (ptr != NULL){
-		if (ptr->data->id == c->id){
-			player_update(ptr->data, c);
+		data_ret = ptr->data;
+		if (data_ret->id == c->id){
+			player_update(data_ret, c);
 		}
 		snprintf(
 			b,
 			sizeof(b),
 			"%d:%.0f:%0.f:%b:%c ",
-			ptr->data->id,
-			ptr->data->x,
-			ptr->data->y,
-			ptr->data->orientaion,
-			ptr->data->state
+			data_ret->id,
+			data_ret->x,
+			data_ret->y,
+			data_ret->orientaion,
+			data_ret->state
 		);
 		strcat(buff, b);
 		ptr = ptr->next;
@@ -132,9 +134,11 @@ int main(){
 	}
 	printf("UDP server listening on port: %d \n", PORT);
 
-	LLNode *players = NULL;
+	LinkedList *players = (LinkedList *)malloc(sizeof(LinkedList));
+	players->head = NULL;
+	players->size = 0;
 	int ID = 0;
-	players = guards_init(1, players);
+	guards_init(1, players);
 	pthread_t guard_tread_id;
 	pthread_create(&guard_tread_id, NULL, guards_thread_function, (void *)players);
 	while (true){
@@ -156,13 +160,13 @@ int main(){
 			np->speed_y = 0;
 			np->state = '.';
 			np->orientaion = false;
-			players = player_ll_insertfront(players, np);
-			player_ll_print(players);
+			ll_insertfront(players, (void *)np);
+			ll_print(players);
 			snprintf(reply, sizeof(reply), "%d", ID++);
 		} else {
 			Controller c;
 			parse_response(buffer, &c);
-			generate_send_buffer(reply, players, &c);
+			generate_send_buffer(reply, players->head, &c);
 		}
 		sendto(sockfd, reply, strlen(reply), 0, (const struct sockaddr *)&client_addr, addr_len);
 	}

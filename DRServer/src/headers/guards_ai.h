@@ -4,6 +4,6 @@
 #include <time.h>
 #include <errno.h>
 
-LLNode *guards_init(size_t n, LLNode *players);
+void guards_init(size_t n, LinkedList *players);
 void *guards_thread_function(void *args);
 int msleep(long msec);

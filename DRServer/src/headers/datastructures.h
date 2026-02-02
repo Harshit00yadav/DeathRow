@@ -3,13 +3,18 @@
 #ifndef DATASTRUCTURES_H
 #define DATASTRUCTURES_H
 
-typedef struct llnode {
-	Player *data;
-	struct llnode *next;
-} LLNode;
+typedef struct NodeLL {
+	void *data;
+	struct NodeLL *next;
+} NodeLL;
 
-LLNode *player_ll_insertfront(LLNode *head, Player *p);
-void player_ll_destroy(LLNode *head);
-void player_ll_print(LLNode *head);
+typedef struct linkedlist {
+	NodeLL *head;
+	size_t size;
+} LinkedList;
+
+void ll_insertfront(LinkedList *list, void *item);
+void ll_teardown(LinkedList *list);
+void ll_print(LinkedList *list);
 
 #endif

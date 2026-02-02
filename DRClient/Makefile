@@ -15,6 +15,8 @@ CFLAGS = -Wall -lSDL2 -lSDL2_image
 
 all: $(NAME)
 
+run: $(NAME)
+	$(BUILD_PATH)/$(NAME)
 
 $(NAME): $(OBJECTS)
 	$(CC) $^ -o $(BUILD_PATH)/$@ $(CFLAGS)

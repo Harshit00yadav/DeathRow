@@ -15,6 +15,8 @@ CFLAGS = -Wall -lpthread -lm
 
 all: $(NAME)
 
+run: $(NAME)
+	$(BUILD_PATH)/$(NAME)
 
 $(NAME): $(OBJECTS)
 	$(CC) $^ -o $(BUILD_PATH)/$@ $(CFLAGS)
@@ -23,7 +25,7 @@ $(NAME): $(OBJECTS)
 $(BUILD_PATH)/%.o: %.c
 	@mkdir -p $(dir $@)
 	@echo "Compiling source to object files"
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) $(DEPFLAGS) -g -c -o $@ $<
 
 clean:
 	@echo "cleaning build..."
