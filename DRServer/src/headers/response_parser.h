@@ -14,7 +14,6 @@ typedef struct Controller {
 	char state;
 	float speed;
 	A_Grid *pathgrid;
-	bool genpath;
 } Controller;
 
 void parse_response(char *buffer, Controller *c);
