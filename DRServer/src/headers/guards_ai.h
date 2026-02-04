@@ -1,6 +1,7 @@
 #include "udp_server.h"
 #include "datastructures.h"
 #include <pthread.h>
+#include <stdlib.h>
 #include <time.h>
 #include <errno.h>
 
@@ -9,7 +10,9 @@
 
 #define AI_STAY_MODE 0
 #define AI_PATROL_MODE 1
-#define DEFAULT_STATE_INERTIA 60*5
+#define DEFAULT_STATE_INERTIA 60*3
+#define DEFAULT_PATROL_MIN -2
+#define DEFAULT_PATROL_MAX 2
 
 typedef struct AI_Attributes {
 	int t_row;

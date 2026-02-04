@@ -1,27 +1,12 @@
 #include "headers/a_star_pathfinder.h"
 #include <time.h>
-#include <errno.h>
+// #include <errno.h>
 
 /*
 
 Compile and test:
-gcc a_star_pathfinder.c -o test_feature -Wall -lm -g;./test_feature;rm ./test_feature 
+gcc src/a_star_pathfinder.c -o test_feature -Wall -lm -g;./test_feature;rm ./test_feature
 
-
-int msleep(long msec){
-    struct timespec ts;
-    int res;
-    if (msec < 0){
-        errno = EINVAL;
-        return -1;
-    }
-    ts.tv_sec = msec / 1000;
-    ts.tv_nsec = (msec % 1000) * 1000000;
-    do {
-        res = nanosleep(&ts, &ts);
-    } while (res && errno == EINTR);
-    return res;
-}
 */
 
 bool A_List_contains(A_List *head, A_Cell *cellptr){
@@ -164,15 +149,15 @@ double heuristic_cost(int startx, int starty, int endx, int endy){
 
 A_Grid *generate_route(A_Grid *grid, int startrow, int startcol, int endrow, int endcol){
 	bool path_found = false;
-	A_Cell *end = &grid->grid[startrow][startcol];
-	A_Cell *ptr = end;
+	A_Cell *start = &grid->grid[startrow][startcol];
+	A_Cell *end = &grid->grid[endrow][endcol];
 	A_List *openlist = NULL;
 	A_List *closedlist = NULL;
-	openlist = A_List_insert(openlist, &grid->grid[endrow][endcol]);
+	openlist = A_List_insert(openlist, end);
 
 	while (openlist != NULL){
 		A_Cell *current = least_f(openlist);
-		if (current == end){
+		if (current == start){
 			path_found = true;
 			break;
 		}
@@ -194,7 +179,7 @@ A_Grid *generate_route(A_Grid *grid, int startrow, int startcol, int endrow, int
 			}
 			neighbour->previous = current;
 			neighbour->g = tempG;
-			neighbour->h = heuristic_cost(neighbour->col, neighbour->row, end->col, end->row);
+			neighbour->h = heuristic_cost(neighbour->col, neighbour->row, start->col, start->row);  // CHANGED: Heuristic to start
 			neighbour->f = neighbour->g + neighbour->h;
 		}
 		
@@ -204,32 +189,76 @@ A_Grid *generate_route(A_Grid *grid, int startrow, int startcol, int endrow, int
 	A_List_destroy(openlist);
 	A_List_destroy(closedlist);
 	if (path_found){
+		A_Cell *ptr = start;
 		while (ptr->previous){
 			ptr->ch = '*';
 			ptr = ptr->previous;
 		}
-		printf("Path Found!\n");
 	} else {
 		printf("Path NOT Found!\n");
 	}
 	return grid;
 }
 
-//int main(){
-//	A_Grid *grid = load_a_map("../../assets/map01.txt");
-//	A_Cell *cur = &grid->grid[2][2];
-//	printgrid(grid);
-//	printf("\n%p\n", cur->previous);
-//	msleep(100);
-//	grid = generate_route(grid, 2, 2, 28, 48);
-//	while (cur->previous){
-//		cur->ch = '@';
-//		printgrid(grid);
-//		printf("\n%p\n", cur->previous);
-//		cur->ch = '+';
-//		cur = cur->previous;
-//		msleep(100);
-//	}
-//	destroy_grid(grid);
-//	return 0;
-//}
+A_Grid *clean_route(A_Grid *grid){
+	for (int i=0; i<grid->hight; i++){
+		for (int j=0; j<grid->width; j++){
+			if (grid->grid[i][j].ch == '*'){
+				grid->grid[i][j].ch = '.'; 
+			}
+			// Reset A* state for ALL cells
+			grid->grid[i][j].g = 0;
+			grid->grid[i][j].h = 0;
+			grid->grid[i][j].f = 0;
+			grid->grid[i][j].previous = NULL;
+		}
+	}
+	return grid;
+}
+
+// #include <stdlib.h>
+// #include <time.h>
+// 
+// int msleep(long msec){
+//     struct timespec ts;
+//     int res;
+//     if (msec < 0){
+//         errno = EINVAL;
+//         return -1;
+//     }
+//     ts.tv_sec = msec / 1000;
+//     ts.tv_nsec = (msec % 1000) * 1000000;
+//     do {
+//         res = nanosleep(&ts, &ts);
+//     } while (res && errno == EINTR);
+//     return res;
+// }
+// 
+// int main(){
+// 	A_Grid *grid = load_a_map("../assets/map01.txt");
+// 	int row = 7;
+// 	int col = 3;
+// 	int trow, tcol;
+// 	srand(time(NULL));
+// 	while (1){
+// 		do {
+// 			trow = row + (rand() % (5 - -5 + 1)) + -5;
+// 			tcol = col + (rand() % (5 - -5 + 1)) + -5;
+// 		} while (trow < 0 || trow >= grid->hight || 
+// 		         tcol < 0 || tcol >= grid->width ||
+// 		         grid->grid[trow][tcol].ch != '.');  // Added bounds checking
+// 		
+// 		printf("target[%d][%d]: \"%c\"\n", trow, tcol, grid->grid[trow][tcol].ch);
+// 		grid = clean_route(grid);
+// 		grid = generate_route(grid, row, col, trow, tcol);
+// 		printgrid(grid);
+// 		
+// 		// UPDATE current position to the target
+// 		row = trow;
+// 		col = tcol;
+// 		
+// 	 	msleep(100);
+// 	}
+// 	destroy_grid(grid);
+// 	return 0;
+// }

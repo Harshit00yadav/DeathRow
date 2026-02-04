@@ -69,6 +69,7 @@ bool guards_follow_target(A_Cell **target, A_Cell *current, Player *guard, Contr
 }
 
 void *guards_thread_function(void *args){
+	srand(time(0));
 	LinkedList *players = (LinkedList *)args;
 	size_t count;
 	count = players->size;
@@ -83,8 +84,8 @@ void *guards_thread_function(void *args){
 
 		ai_ba[indx].mode = AI_STAY_MODE;
 		ai_ba[indx].t_row = 2;
-		ai_ba[indx].t_col = 54;
-		ai_ba[indx].find_path = true;
+		ai_ba[indx].t_col = 2;
+		ai_ba[indx].find_path = false;
 		ai_ba[indx].state_inertia = DEFAULT_STATE_INERTIA;
 
 		cntrls[indx].left = false;
@@ -98,7 +99,7 @@ void *guards_thread_function(void *args){
 		cntrls[indx].pathgrid = load_a_map("../assets/map01.txt");
 	}
 
-	bool reached;
+	bool reached = false;
 	int row, col;
 	A_Cell *cur_cell = NULL, *target_cell = NULL;
 	Player *ptr_data;
@@ -111,6 +112,7 @@ void *guards_thread_function(void *args){
 				col = (ptr_data->x / 32);
 				cur_cell = &cntrls[indx].pathgrid->grid[row][col];
 				if (ai_ba[indx].find_path){
+					cntrls[indx].pathgrid = clean_route(cntrls[indx].pathgrid);
 					cntrls[indx].pathgrid = generate_route(
 						cntrls[indx].pathgrid,
 						row,
@@ -118,25 +120,35 @@ void *guards_thread_function(void *args){
 						ai_ba[indx].t_row,
 						ai_ba[indx].t_col
 					);
-					ai_ba[indx].find_path = false;
 					target_cell = cur_cell->previous;
+					ai_ba[indx].find_path = false;
 				};
 				switch (ai_ba[indx].mode){
 					case AI_STAY_MODE:
 						ai_ba[indx].state_inertia--;
 						if (ai_ba[indx].state_inertia < 0){
+							ai_ba[indx].find_path = true;
 							ai_ba[indx].state_inertia = DEFAULT_STATE_INERTIA;
 							ai_ba[indx].mode = AI_PATROL_MODE;
-							ai_ba[indx].find_path = true;
-							printf("switched to Patrol\n");
+							int tr, tc;
+							do {
+								tr = row + (rand() % (5 - -5 + 1)) + -5;
+								tc = col + (rand() % (5 - -5 + 1)) + -5;
+							} while (
+								tr < 0 || tr >= cntrls[indx].pathgrid->hight || 
+								tc < 0 || tc >= cntrls[indx].pathgrid->width ||
+								cntrls[indx].pathgrid->grid[tr][tc].ch != '.'
+							);
+							ai_ba[indx].t_row = tr;
+							ai_ba[indx].t_col = tc;
 						}
 						break;
 					case AI_PATROL_MODE:
 						reached = guards_follow_target(&target_cell, cur_cell, ptr_data, &cntrls[indx]);
 						if (reached){
 							ai_ba[indx].mode = AI_STAY_MODE;
-							printf("switched to Stay\n");
-							// TODO: find random target cells to patrol to
+							reached = false;
+
 						}
 						break;
 				}

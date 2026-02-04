@@ -38,5 +38,6 @@ A_Grid *load_a_map(const char *path);
 double heuristic_cost(int startx, int starty, int endx, int endy);
 void printgrid(A_Grid *grid);
 A_Grid *generate_route(A_Grid *grid, int startrow, int startcol, int endrow, int endcol);
+A_Grid *clean_route(A_Grid *grid);
 void destroy_grid(A_Grid *grid);
 #endif
