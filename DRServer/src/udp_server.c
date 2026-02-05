@@ -138,7 +138,7 @@ int main(){
 	players->head = NULL;
 	players->size = 0;
 	int ID = 0;
-	guards_init(1, players);
+	guards_init(5, players);
 	pthread_t guard_tread_id;
 	pthread_create(&guard_tread_id, NULL, guards_thread_function, (void *)players);
 	while (true){

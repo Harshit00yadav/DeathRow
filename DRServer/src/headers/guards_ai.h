@@ -19,6 +19,8 @@ typedef struct AI_Attributes {
 	int t_col;
 	int state_inertia;
 	bool find_path;
+	bool reached;
+	A_Cell *target;
 	int mode;
 } AI_Behaviour_Attributes;
 

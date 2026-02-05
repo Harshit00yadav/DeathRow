@@ -69,7 +69,7 @@ bool guards_follow_target(A_Cell **target, A_Cell *current, Player *guard, Contr
 }
 
 void *guards_thread_function(void *args){
-	srand(time(0));
+	unsigned int seed = (unsigned int)time(NULL) ^ getpid() ^ pthread_self();
 	LinkedList *players = (LinkedList *)args;
 	size_t count;
 	count = players->size;
@@ -86,6 +86,8 @@ void *guards_thread_function(void *args){
 		ai_ba[indx].t_row = 2;
 		ai_ba[indx].t_col = 2;
 		ai_ba[indx].find_path = false;
+		ai_ba[indx].reached = false;
+		ai_ba[indx].target = NULL;
 		ai_ba[indx].state_inertia = DEFAULT_STATE_INERTIA;
 
 		cntrls[indx].left = false;
@@ -98,10 +100,8 @@ void *guards_thread_function(void *args){
 		cntrls[indx].state = '.';
 		cntrls[indx].pathgrid = load_a_map("../assets/map01.txt");
 	}
-
-	bool reached = false;
 	int row, col;
-	A_Cell *cur_cell = NULL, *target_cell = NULL;
+	A_Cell *cur_cell = NULL;
 	Player *ptr_data;
 	while (true){
 		for (NodeLL *ptr=players->head; ptr!=NULL; ptr=ptr->next){
@@ -120,7 +120,7 @@ void *guards_thread_function(void *args){
 						ai_ba[indx].t_row,
 						ai_ba[indx].t_col
 					);
-					target_cell = cur_cell->previous;
+					ai_ba[indx].target = cur_cell->previous;
 					ai_ba[indx].find_path = false;
 				};
 				switch (ai_ba[indx].mode){
@@ -132,8 +132,8 @@ void *guards_thread_function(void *args){
 							ai_ba[indx].mode = AI_PATROL_MODE;
 							int tr, tc;
 							do {
-								tr = row + (rand() % (5 - -5 + 1)) + -5;
-								tc = col + (rand() % (5 - -5 + 1)) + -5;
+								tr = row + (rand_r(&seed) % (5 - -5 + 1)) + -5;
+								tc = col + (rand_r(&seed) % (5 - -5 + 1)) + -5;
 							} while (
 								tr < 0 || tr >= cntrls[indx].pathgrid->hight || 
 								tc < 0 || tc >= cntrls[indx].pathgrid->width ||
@@ -144,11 +144,10 @@ void *guards_thread_function(void *args){
 						}
 						break;
 					case AI_PATROL_MODE:
-						reached = guards_follow_target(&target_cell, cur_cell, ptr_data, &cntrls[indx]);
-						if (reached){
+						ai_ba[indx].reached = guards_follow_target(&ai_ba[indx].target, cur_cell, ptr_data, &cntrls[indx]);
+						if (ai_ba[indx].reached){
 							ai_ba[indx].mode = AI_STAY_MODE;
-							reached = false;
-
+							ai_ba[indx].reached = false;
 						}
 						break;
 				}
