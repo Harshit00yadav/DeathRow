@@ -152,8 +152,8 @@ int main(){
 		if (strcmp(buffer, "connect") == 0){
 			Player *np = malloc(sizeof(Player));
 			np->id = ID;
-			np->x = 150;
-			np->y = 150;
+			np->x = get_map_cordinate_x(1 + ID);
+			np->y = get_map_cordinate_y(1);
 			np->x_padding = 10;
 			np->y_padding = 10;
 			np->speed_x = 0;

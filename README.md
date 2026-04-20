@@ -11,8 +11,8 @@ Sabotage, murder, and manipulation are all on the table — but guards are watch
 - **Title**: DeathRow
 - **Genre**: Multiplayer Social Deception / Survival / Task Management
 - **Perspective**: Top-down or Third-person (TBD)
-- **Platform**: PC (initial), with future cross-platform potential
-- **Engine**: [To be decided] (e.g., Unity, Godot, Unreal)
+- **Platform**: Linux
+- **Engine**: Custom C framework
 
 ---
 
@@ -47,22 +47,22 @@ Sabotage, murder, and manipulation are all on the table — but guards are watch
 
 | Feature | Status |
 |--------|--------|
-| Multiplayer Lobby System | ✅ Prototype |
-| Procedural Task Generator | ✅ Prototype |
-| Sabotage System | 🔜 In Progress |
-| Murder & Forensics Mechanic | 🔜 In Design |
-| AI Guard System | 🔜 Planned |
-| Suspicion & Reporting | 🔜 Planned |
-| Inventory & Tools | 🔜 In Progress |
-| Multiple Maps | ⏳ Experimental |
-| Hidden Roles & Side Objectives | ⏳ Optional Phase |
+| Multiplayer Lobby System | Prototype |
+| AI Guard System | Prototype |
+| Sabotage System | Planned |
+| Task assginment | In Progress |
+| Suspicion & Reporting | Planned |
+| Inventory & Tools | In Progress |
+| Murder & Forensics Mechanic | In Design |
+| Hidden Roles & Side Objectives | Optional Phase |
+| Multiple Maps | Experimental |
 
 ---
 
 ## 🧪 Development Roadmap
 
 ### Phase 1: Core Prototype
-- [ ] Build multiplayer lobby with basic player sync
+- [+] Build multiplayer lobby with basic player sync
 - [ ] Implement task tracking system
 - [ ] Add sabotage interactions
 - [ ] Design elimination logic
@@ -82,10 +82,10 @@ Sabotage, murder, and manipulation are all on the table — but guards are watch
 
 ## 🔧 Tech Stack (Planned)
 
-- **Engine**: Unity or Godot
-- **Networking**: ENet / Mirror / Godot Multiplayer API
-- **Language**: C#, GDScript or C++
-- **Multiplayer Backend**: Peer-to-peer or custom server architecture
+- **Engine**: Custom Engine
+- **Networking**: UDP Socket
+- **Language**: C
+- **Multiplayer Backend**: Client Server Architecture
 
 ---
 

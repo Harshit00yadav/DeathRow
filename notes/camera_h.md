@@ -1,0 +1,1 @@
+Contains simple function that helps the camera view to follow the selected target, mostly player

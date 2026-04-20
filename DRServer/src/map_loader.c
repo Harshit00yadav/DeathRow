@@ -6,7 +6,7 @@ mapObject *load_map(const char *path){
 	obj->array = calloc(MAPBUFFER, sizeof(char));
 	obj->width = -1;
 	obj->hight = -1;
-	obj->tilesize = 32;
+	obj->tilesize = TILE_SIZE;
 	char c;
 	int i = 0;
 	while ((c = fgetc(m)) != EOF){
@@ -18,6 +18,14 @@ mapObject *load_map(const char *path){
 	obj->hight = i / obj->width;
 	fclose(m);
 	return obj;
+}
+
+int get_map_cordinate_x(int cellx){
+	return cellx * TILE_SIZE + TILE_SIZE / 2;
+}
+
+int get_map_cordinate_y(int celly){
+	return celly * TILE_SIZE + TILE_SIZE / 2;
 }
 
 void destroy_map(mapObject *map){
